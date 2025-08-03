@@ -175,6 +175,7 @@ namespace FireLoader
             keyStatusLabel.Location = new Point(10, 130);
             statusPanel.Controls.Add(keyStatusLabel);
 
+            // Create and add the version label here — only once
             versionStatusLabel = CreateStatusLabel($"Loader Version: {currentVersion}");
             versionStatusLabel.Location = new Point(10, 210);
             statusPanel.Controls.Add(versionStatusLabel);
