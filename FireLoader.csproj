@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Platforms>AnyCPU;x64</Platforms>
+    <BaseOutputPath>C:\Users\mac98\Desktop\Devs Projects\FireLoader\FireLoader\Build</BaseOutputPath>
+    <ApplicationIcon>Assets\FiveM(2).ico</ApplicationIcon>
+    <PackageIcon>FiveM(2).ico</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\bg.PNG" />
+    <None Remove="Assets\FiveM%282%29.ico" />
+    <None Remove="Assets\Loading Screen.gif" />
+    <None Remove="Assets\loading.gif" />
+    <None Remove="Assets\login.jpg" />
+    <None Remove="Assets\login.png" />
+    <None Remove="Assets\welcome.gif" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\bg.PNG">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\FiveM(2).ico">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\FiveM.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\loading.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\login.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\login.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NSec.Cryptography" Version="25.4.0" />
+    <PackageReference Include="System.Security.Cryptography.Cng" Version="5.0.0" />
+  </ItemGroup>
+
+</Project>
