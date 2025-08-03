@@ -28,6 +28,10 @@ jobs:
       - name: Build
         run: dotnet publish -c Release -r win-x64 --self-contained false -o output
 
+      - name: Rename EXE to FireLoader.exe
+        run: |
+          Get-ChildItem output/*.exe | Rename-Item -NewName "FireLoader.exe"
+
       - name: Read version from latest_version.txt
         id: get_version
         run: |
@@ -39,7 +43,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: FireLoader
-          path: output/
+          path: output/FireLoader.exe
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
