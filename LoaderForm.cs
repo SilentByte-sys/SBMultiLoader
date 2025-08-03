@@ -720,7 +720,7 @@ namespace FireLoader
         }
 
         private readonly string latestVersionUrl = "https://raw.githubusercontent.com/SilentByte-sys/SBMultiLoader/main/latest_version.txt";
-        private readonly string downloadUrl = "https://github.com/SilentByte-sys/SBMultiLoader/releases/latest/download/FireLoader.exe";
+        private readonly string downloadUrl = "https://github.com/SilentByte-sys/SBMultiLoader/releases/latest/download/<YourActualFileName>.exe";
 
         private async Task CheckForUpdatesAsync()
         {
@@ -797,4 +797,5 @@ namespace FireLoader
         public int SvMaxclients { get; set; }
         public System.Collections.Generic.List<object> Players { get; set; }
     }
+
 }
