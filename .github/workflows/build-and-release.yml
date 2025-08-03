@@ -20,21 +20,22 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x' # change if using .NET Framework
+          dotnet-version: '8.0.x' # adjust if needed
 
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build and publish
+      - name: Build
         run: dotnet publish -c Release -r win-x64 --self-contained false -o output
 
-      - name: Rename executable to FireLoader.exe
+      - name: Read version from latest_version.txt
+        id: get_version
         run: |
-          dir output
-          # Replace YourActualExeName.exe with your real exe name from publish output
-          move output\YourActualExeName.exe output\FireLoader.exe
+          VERSION=$(cat latest_version.txt)
+          echo "Version is $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Upload artifact (optional, for debug)
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: FireLoader
@@ -43,8 +44,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v1.0.${{ github.run_number }}
-          name: Loader v1.0.${{ github.run_number }}
+          tag_name: ${{ steps.get_version.outputs.version }}
+          name: Loader ${{ steps.get_version.outputs.version }}
           files: output/FireLoader.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
