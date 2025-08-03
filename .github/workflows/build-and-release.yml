@@ -25,10 +25,16 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build
+      - name: Build and publish
         run: dotnet publish -c Release -r win-x64 --self-contained false -o output
 
-      - name: Upload artifact
+      - name: Rename executable to FireLoader.exe
+        run: |
+          dir output
+          # Replace YourActualExeName.exe with your real exe name from publish output
+          move output\YourActualExeName.exe output\FireLoader.exe
+
+      - name: Upload artifact (optional, for debug)
         uses: actions/upload-artifact@v4
         with:
           name: FireLoader
@@ -37,8 +43,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ github.run_number }}
-          name: Loader v${{ github.run_number }}
+          tag_name: v1.0.${{ github.run_number }}
+          name: Loader v1.0.${{ github.run_number }}
           files: output/FireLoader.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
