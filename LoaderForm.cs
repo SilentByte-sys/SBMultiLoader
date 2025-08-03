@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -55,13 +55,20 @@ namespace FireLoader
 
         private const string ConfigPath = @"%AppData%\FireLoader\config.dat";
 
-        private readonly string currentVersion = "1.0";
+        private readonly string currentVersion;
+
+
         private System.Windows.Forms.Timer statusUpdateTimer;
         private bool isUpdating = false;
         private const string updateJsonUrl = "https://raw.githubusercontent.com/SilentByte-sys/SBMultiLoader/main/update.json";
 
+
         public LoaderForm()
         {
+            var version = Application.ProductVersion;
+            var parts = version.Split('.');
+            currentVersion = $"{parts[0]}.{parts[1]}.{parts[2]}"; // major.minor.build
+
             DoubleBuffered = true;
             FormBorderStyle = FormBorderStyle.None;
             BackColor = Color.FromArgb(25, 25, 25);
@@ -72,11 +79,15 @@ namespace FireLoader
             InitUI();
             LoadSavedCreds();
 
+            // Set version label here (make sure loaderVersionLabel is initialized in InitUI or earlier)
+            versionStatusLabel.Text = $"Loader Version: {currentVersion}";
+
             KeyAuthApp.init();
             _ = CheckServerStatus();
             StartStatusUpdateTimer();
             _ = CheckForUpdatesAsync();
         }
+
 
         private void InitTitleBar()
         {
@@ -135,7 +146,7 @@ namespace FireLoader
             var statusPanel = new Panel
             {
                 BackColor = Color.FromArgb(40, 40, 40),
-                Size = new Size(178, ClientSize.Height - titleBar.Height),
+                Size = new Size(175, ClientSize.Height - titleBar.Height),
                 Location = new Point(0, titleBar.Height),
                 Padding = new Padding(15),
             };
@@ -165,7 +176,7 @@ namespace FireLoader
             statusPanel.Controls.Add(keyStatusLabel);
 
             versionStatusLabel = CreateStatusLabel($"Loader Version: {currentVersion}");
-            versionStatusLabel.Location = new Point(10, 170);
+            versionStatusLabel.Location = new Point(10, 210);
             statusPanel.Controls.Add(versionStatusLabel);
 
             // Right side form elements
@@ -719,32 +730,56 @@ namespace FireLoader
             }
         }
 
-        private readonly string latestVersionUrl = "https://raw.githubusercontent.com/SilentByte-sys/SBMultiLoader/main/latest_version.txt";
-        private readonly string downloadUrl = "https://github.com/SilentByte-sys/SBMultiLoader/releases/latest/download/<YourActualFileName>.exe";
+        private readonly string latestVersionUrl = "https://raw.githubusercontent.com/SilentByte-sys/SBMultiLoader/refs/heads/main/latest_version.txt";
+        private readonly string downloadUrl = "https://github.com/SilentByte-sys/SBMultiLoader/releases/latest/download/FireLoader.exe";
 
         private async Task CheckForUpdatesAsync()
         {
-            string updateUrl = "https://raw.githubusercontent.com/SilentByte-sys/SBMultiLoader/refs/heads/main/update.json?token=GHSAT0AAAAAADIEPYEG3ROKFRE6RA6UQOTE2EO6XEA";
-
             try
             {
                 using HttpClient client = new HttpClient();
-                string jsonString = await client.GetStringAsync(updateUrl);
 
-                var updateInfo = JsonSerializer.Deserialize<UpdateInfo>(jsonString);
+                // Get latest version from GitHub text file
+                string latestVersion = (await client.GetStringAsync(latestVersionUrl)).Trim();
 
-                if (updateInfo != null && updateInfo.version != currentVersion)
+                if (latestVersion != currentVersion)
                 {
-                    var result = MessageBox.Show($"New version {updateInfo.version} available. Update now?",
-                        "Update Available", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                    var result = MessageBox.Show(
+                        $"A new version ({latestVersion}) is available. Update now?",
+                        "Update Available",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Information
+                    );
 
                     if (result == DialogResult.Yes)
                     {
+                        string currentExe = Application.ExecutablePath;
                         string tempPath = Path.Combine(Path.GetTempPath(), "FireLoader_Update.exe");
-                        byte[] fileBytes = await client.GetByteArrayAsync(updateInfo.download_url);
+
+                        // Download new EXE
+                        byte[] fileBytes = await client.GetByteArrayAsync(downloadUrl);
                         File.WriteAllBytes(tempPath, fileBytes);
 
-                        Process.Start(new ProcessStartInfo { FileName = tempPath, UseShellExecute = true });
+                        // Create updater batch file
+                        string updaterPath = Path.Combine(Path.GetTempPath(), "update_loader.bat");
+                        File.WriteAllText(updaterPath, $@"
+@echo off
+timeout /t 1 /nobreak > NUL
+taskkill /F /IM {Path.GetFileName(currentExe)} > NUL
+copy /Y ""{tempPath}"" ""{currentExe}""
+start """" ""{currentExe}""
+del ""{tempPath}""
+del ""%~f0""
+");
+
+                        // Run updater script
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = updaterPath,
+                            UseShellExecute = true,
+                            WindowStyle = ProcessWindowStyle.Hidden
+                        });
+
                         Application.Exit();
                     }
                 }
@@ -797,5 +832,4 @@ namespace FireLoader
         public int SvMaxclients { get; set; }
         public System.Collections.Generic.List<object> Players { get; set; }
     }
-
 }
