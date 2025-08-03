@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -8,13 +8,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Platforms>AnyCPU;x64</Platforms>
     <BaseOutputPath>C:\Users\mac98\Desktop\Devs Projects\FireLoader\FireLoader\Build</BaseOutputPath>
-    <ApplicationIcon>Assets\FiveM(2).ico</ApplicationIcon>
-    <PackageIcon>FiveM(2).ico</PackageIcon>
+
+    <!-- Updated to use FiveM.ico -->
+    <ApplicationIcon>Assets\FiveM.ico</ApplicationIcon>
+    <PackageIcon>FiveM.ico</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Assets\bg.PNG" />
-    <None Remove="Assets\FiveM%282%29.ico" />
+    <None Remove="Assets\FiveM.ico" />
     <None Remove="Assets\Loading Screen.gif" />
     <None Remove="Assets\loading.gif" />
     <None Remove="Assets\login.jpg" />
@@ -26,7 +28,7 @@
     <Content Include="Assets\bg.PNG">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\FiveM(2).ico">
+    <Content Include="Assets\FiveM.ico">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
