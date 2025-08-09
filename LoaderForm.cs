@@ -518,6 +518,8 @@ namespace FireLoader
                 allowedGames.Add("FiveM");
             if (key.Contains("CS2", StringComparison.OrdinalIgnoreCase))
                 allowedGames.Add("CS2");
+            if (key.Contains("COD", StringComparison.OrdinalIgnoreCase))
+                allowedGames.Add("COD");
 
             foreach (var game in allowedGames)
             {
